@@ -102,11 +102,13 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
           ),
+          // Lottie animation in a loop
           Positioned.fill(
             child: IgnorePointer(
               child: Lottie.asset(
                 "assets/images/Floating.json",
                 repeat: true,
+                animate: true,
                 fit: BoxFit.cover,
               ),
             ),
