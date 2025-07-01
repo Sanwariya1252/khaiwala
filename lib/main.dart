@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:khaiwala/pages/login_page.dart';
+import 'package:khaiwala/pages/splash_page.dart';
 import 'package:khaiwala/styles/app_colors.dart';
 
 void main() {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Akaya",
         scaffoldBackgroundColor: AppColors.backGroundColor,
       ),
-      home: LoginPage(),
+      home: SplashPage(),
     );
   }
 }

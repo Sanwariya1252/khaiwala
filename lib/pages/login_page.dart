@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:khaiwala/pages/forgot_pass.dart';
-import 'package:khaiwala/pages/home_page.dart';
 import 'package:khaiwala/pages/register_page.dart';
+import 'package:khaiwala/styles/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +19,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xff009f75),
+        systemNavigationBarColor: Color(0xff009f75),
+      ),
+    );
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -163,10 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: height * 0.065,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
+                      // Navigator.pushNamed()
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff009f75),
@@ -178,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       elevation: 11,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(11.0),
                       ),
                     ),
                     child: const Text("Login"),
@@ -212,7 +216,15 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Could not open WhatsApp")),
+                          SnackBar(
+                            backgroundColor: AppColors.headingColor,
+                            content: Center(
+                              child: Text(
+                                "Could not open WhatsApp",
+                                style: TextStyle(fontSize: 11),
+                              ),
+                            ),
+                          ),
                         );
                       }
                     },
@@ -260,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.03),
+                SizedBox(height: height * 0.06),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
