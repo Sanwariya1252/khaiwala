@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:khaiwala/pages/login_page.dart';
+import 'package:khaiwala/styles/app_colors.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Color(0xff009f75),
+      systemNavigationBarColor: Color(0xff009f75),
+    ),
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +21,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'KhaiWala',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: "Akaya"),
+      theme: ThemeData(
+        fontFamily: "Akaya",
+        scaffoldBackgroundColor: AppColors.backGroundColor,
+      ),
       home: LoginPage(),
     );
   }
