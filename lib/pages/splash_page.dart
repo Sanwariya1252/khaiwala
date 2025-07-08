@@ -13,20 +13,13 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  static const splashDuration = Duration(seconds: 8);
+
   @override
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    // Set status and navigation bar color
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xff009f75),
@@ -34,85 +27,103 @@ class _SplashPageState extends State<SplashPage> {
       ),
     );
 
-    final size = MediaQuery.of(context).size;
-    final double imageSize = size.width * 0.6; // 60% of screen width
-    final double verticalSpacing = size.height * 0.05; // 5% of screen height
-    final double titleFontSize = size.width * 0.06; // Responsive font size
-    final double subtitleFontSize = size.width * 0.08;
+    // Navigate to LoginPage after delay
+    Timer(splashDuration, () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
+    });
+  }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            color: AppColors.primaryColor,
-            width: double.infinity,
-            height: double.infinity,
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: size.height,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: size.height * 0.13),
-                    Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(imageSize / 2),
-                        child: Image.asset(
-                          "assets/images/khaiwala.png",
-                          width: imageSize,
-                          height: imageSize,
-                          fit: BoxFit.cover,
-                        ),
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final screenWidth = constraints.maxWidth;
+              final screenHeight = constraints.maxHeight;
+
+              // Responsive sizes
+              final double imageSize = screenWidth * 0.5; // 50% width
+              final double spacing = screenHeight * 0.03;
+              final double titleFontSize = screenWidth * 0.05;
+              final double subtitleFontSize = screenWidth * 0.065;
+              final double horizontalPadding = screenWidth * 0.08;
+
+              return Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: AppColors.primaryColor,
+                  ),
+
+                  // Background animation
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: Lottie.asset(
+                        "assets/images/Floating.json",
+                        repeat: true,
+                        animate: true,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(height: verticalSpacing),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.08,
-                      ),
-                      child: Text(
-                        "Guess the right Number and Win More in Your faovrite Games",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: "Barabara",
-                          fontSize: titleFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.backGroundColor,
-                        ),
+                  ),
+
+                  // Foreground content with scroll protection
+                  Center(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: spacing),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(imageSize / 2),
+                            child: Image.asset(
+                              "assets/images/khaiwala.png",
+                              width: imageSize,
+                              height: imageSize,
+                              fit: BoxFit.cover,
+                              semanticLabel: "Khaiwala Logo",
+                            ),
+                          ),
+                          SizedBox(height: spacing),
+                          Text(
+                            "Guess the right Number and Win More in Your favorite Games",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "Barabara",
+                              fontSize: titleFontSize,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                          SizedBox(height: spacing * 1.5),
+                          Text(
+                            "Let's Play, Game On!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "Barabara",
+                              fontSize: subtitleFontSize,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: verticalSpacing),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.08,
-                      ),
-                      child: Text(
-                        "Let's Play Game On !",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: subtitleFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.backGroundColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                ],
+              );
+            },
           ),
-          // Lottie animation in a loop
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Lottie.asset(
-                "assets/images/Floating.json",
-                repeat: true,
-                animate: true,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

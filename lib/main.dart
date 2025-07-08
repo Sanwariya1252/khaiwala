@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khaiwala/pages/splash_page.dart';
-import 'package:khaiwala/styles/app_colors.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Akaya",
-        scaffoldBackgroundColor: AppColors.backGroundColor,
+        scaffoldBackgroundColor: Color(0xFFE8F5E9),
       ),
       home: SplashPage(),
     );
