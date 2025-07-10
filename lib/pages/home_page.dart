@@ -7,6 +7,7 @@ import 'package:khaiwala/pages/resultchart_page.dart';
 import 'package:khaiwala/pages/support_page.dart';
 import 'package:khaiwala/pages/winner_page.dart';
 import 'package:khaiwala/styles/app_colors.dart';
+import 'dart:math' as math;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -130,20 +131,28 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-/// This painter draws the curved tab shape
+/// This painter draws a true protractor (semicircle) shape behind the button
 class _TabPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..shader = const LinearGradient(
-        colors: [Color(0xff009f75), Color(0xFFE8F5E9)],
+        colors: [Color(0xff009f75), Color(0xFFE8F5E9), Color(0xFFE8F5E9)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     final Path path = Path()
-      ..moveTo(0, size.height * 0.3)
-      ..quadraticBezierTo(size.width * 0.5, 0, size.width, size.height * 0.3)
+      // Start at bottom left
+      ..moveTo(0, size.height)
+      // Draw semicircular arc to bottom right
+      ..arcTo(
+        Rect.fromLTWH(0, 0, size.width, size.height * 2),
+        math.pi, // Start angle: 180 degrees
+        math.pi, // Sweep angle: 180 degrees
+        false,
+      )
+      // Close the shape to fill below the arc
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
