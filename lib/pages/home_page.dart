@@ -51,8 +51,9 @@ class _HomePageState extends State<HomePage> {
         key: _scaffoldKey,
         body: Stack(
           children: [
-            if (_selectedIndex != 2) _drawerPages[_currentIndex],
-            _pages[_selectedIndex],
+            if (_selectedIndex != 2)
+              _drawerPages[_currentIndex], // Drawer page background
+            _pages[_selectedIndex], // The main page
             if (_selectedIndex == 2)
               Positioned(
                 left: MediaQuery.of(context).size.width * 0.5 - 75,
