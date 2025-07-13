@@ -18,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 2;
+  int _currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   final List<Widget> _pages = [
     const ResultchartPage(),
@@ -26,16 +28,31 @@ class _HomePageState extends State<HomePage> {
     const WinnerPage(),
     const MybidPage(),
   ];
+  final List<Widget> _drawerPages = [
+    DrawerPage(text: "home"),
+    DrawerPage(text: "wallet"),
+    DrawerPage(text: "passbook"),
+    DrawerPage(text: "bank accounts"),
+    DrawerPage(text: "rules & rates"),
+    DrawerPage(text: "my bid history"),
+    DrawerPage(text: "result charts"),
+    DrawerPage(text: "refer app"),
+    DrawerPage(text: "share points"),
+    DrawerPage(text: "update password"),
+    DrawerPage(text: "language change"),
+    DrawerPage(text: "contact us"),
+    DrawerPage(text: "log out"),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Stack(
           children: [
+            _drawerPages[_currentIndex],
             _pages[_selectedIndex],
-
-            // Show Trader Mode button only on Home
             if (_selectedIndex == 2)
               Positioned(
                 left: MediaQuery.of(context).size.width * 0.5 - 75,
@@ -79,6 +96,99 @@ class _HomePageState extends State<HomePage> {
               ),
           ],
         ),
+        drawerEnableOpenDragGesture: false,
+        drawer: NavigationDrawer(
+          backgroundColor: AppColors.primaryColor,
+          indicatorColor: AppColors.headingColor,
+          onDestinationSelected: (value) {
+            setState(() {
+              _currentIndex = value;
+            });
+            _scaffoldKey.currentState?.closeDrawer();
+          },
+          selectedIndex: _currentIndex,
+          children: [
+            DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage("assets/images/khaiwala.png"),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Sonu Sanwariya",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 22,
+                    ),
+                  ),
+                  Text(
+                    "+918233008233",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.home),
+              label: Text("Home"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.monetization_on),
+              label: Text("Wallet"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.receipt_long),
+              label: Text("Passbook"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.account_balance),
+              label: Text("Bank Accounts"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.rule),
+              label: Text("Rules & Rates"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.history),
+              label: Text("My Bid History"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.bar_chart),
+              label: Text("Result Charts"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.share),
+              label: Text("Refer App"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.swap_horiz),
+              label: Text("Share Points"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.lock_reset),
+              label: Text("Update Password"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.translate),
+              label: Text("Language Change"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.support_agent),
+              label: Text("Contact Us"),
+            ),
+            NavigationDrawerDestination(
+              icon: Icon(Icons.exit_to_app),
+              label: Text("Log Out"),
+            ),
+          ],
+        ),
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
             height: 60,
@@ -117,7 +227,7 @@ class _HomePageState extends State<HomePage> {
               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
               NavigationDestination(
                 icon: Icon(Icons.emoji_events_outlined),
-                label: 'Winner',
+                label: 'Winners',
               ),
               NavigationDestination(
                 icon: Icon(Icons.gavel_rounded),
@@ -128,6 +238,16 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+class DrawerPage extends StatelessWidget {
+  final String text;
+  const DrawerPage({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text(text));
   }
 }
 
@@ -238,14 +358,22 @@ class HomeContentPage extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ClipOval(
-                      child: Image.asset(
-                        "assets/images/khaiwala.png",
-                        width: 45,
-                        height: 45,
-                        fit: BoxFit.cover,
+                    Builder(
+                      builder: (context) => ClipOval(
+                        child: InkWell(
+                          onTap: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          child: Image.asset(
+                            "assets/images/khaiwala.png",
+                            width: 45,
+                            height: 45,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
+
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Text(
