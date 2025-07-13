@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         key: _scaffoldKey,
         body: Stack(
           children: [
-            _drawerPages[_currentIndex],
+            if (_selectedIndex != 2) _drawerPages[_currentIndex],
             _pages[_selectedIndex],
             if (_selectedIndex == 2)
               Positioned(
@@ -96,98 +96,119 @@ class _HomePageState extends State<HomePage> {
               ),
           ],
         ),
-        drawerEnableOpenDragGesture: false,
-        drawer: NavigationDrawer(
-          backgroundColor: AppColors.primaryColor,
-          indicatorColor: AppColors.headingColor,
-          onDestinationSelected: (value) {
-            setState(() {
-              _currentIndex = value;
-            });
-            _scaffoldKey.currentState?.closeDrawer();
-          },
-          selectedIndex: _currentIndex,
-          children: [
-            DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage("assets/images/khaiwala.png"),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Sonu Sanwariya",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22,
-                    ),
-                  ),
-                  Text(
-                    "+918233008233",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+        drawer: NavigationDrawerTheme(
+          data: NavigationDrawerThemeData(
+            tileHeight: 46,
+            iconTheme: WidgetStatePropertyAll(IconThemeData(size: 28)),
+            labelTextStyle: WidgetStatePropertyAll(
+              TextStyle(
+                fontFamily: "Akaya",
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.home),
-              label: Text("Home"),
+            backgroundColor: AppColors.primaryColor,
+            indicatorColor: AppColors.logoFontColor,
+            indicatorShape: BeveledRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(10),
+              side: BorderSide(color: AppColors.blackColor),
             ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.monetization_on),
-              label: Text("Wallet"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.receipt_long),
-              label: Text("Passbook"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.account_balance),
-              label: Text("Bank Accounts"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.rule),
-              label: Text("Rules & Rates"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.history),
-              label: Text("My Bid History"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.bar_chart),
-              label: Text("Result Charts"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.share),
-              label: Text("Refer App"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.swap_horiz),
-              label: Text("Share Points"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.lock_reset),
-              label: Text("Update Password"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.translate),
-              label: Text("Language Change"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.support_agent),
-              label: Text("Contact Us"),
-            ),
-            NavigationDrawerDestination(
-              icon: Icon(Icons.exit_to_app),
-              label: Text("Log Out"),
-            ),
-          ],
+          ),
+          child: NavigationDrawer(
+            onDestinationSelected: (value) {
+              setState(() {
+                _currentIndex = value;
+              });
+              _scaffoldKey.currentState?.closeDrawer();
+            },
+            selectedIndex: _currentIndex,
+            children: [
+              DrawerHeader(
+                child: Padding(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage(
+                          "assets/images/khaiwala.png",
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Sonu Sanwariya",
+                        style: TextStyle(
+                          color: Colors.green[50],
+                          fontWeight: FontWeight.w900,
+                          fontSize: 22,
+                        ),
+                      ),
+                      Text(
+                        "+918233008233",
+                        style: TextStyle(
+                          color: Colors.green[50],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.home),
+                label: Text("Home"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.monetization_on),
+                label: Text("Wallet"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.receipt_long),
+                label: Text("Passbook"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.account_balance),
+                label: Text("Bank Accounts"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.rule),
+                label: Text("Rules & Rates"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.history),
+                label: Text("My Bid History"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.bar_chart),
+                label: Text("Result Charts"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.share),
+                label: Text("Refer App"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.swap_horiz),
+                label: Text("Share Points"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.lock_reset),
+                label: Text("Update Password"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.translate),
+                label: Text("Language Change"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.support_agent),
+                label: Text("Contact Us"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.exit_to_app),
+                label: Text("Log Out"),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
