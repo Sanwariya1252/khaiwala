@@ -10,7 +10,9 @@ import 'package:khaiwala/styles/app_colors.dart';
 import 'dart:math' as math;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? fullName;
+  final String? mobileNumber;
+  const HomePage({super.key, this.fullName, this.mobileNumber});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -138,15 +140,16 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        "Sonu Sanwariya",
+                        widget.fullName ?? "Guest",
                         style: TextStyle(
                           color: Colors.green[50],
                           fontWeight: FontWeight.w900,
                           fontSize: 22,
                         ),
                       ),
+
                       Text(
-                        "+918233008233",
+                        widget.mobileNumber ?? "",
                         style: TextStyle(
                           color: Colors.green[50],
                           fontWeight: FontWeight.bold,
@@ -179,6 +182,10 @@ class _HomePageState extends State<HomePage> {
               NavigationDrawerDestination(
                 icon: Icon(Icons.history),
                 label: Text("My Bid History"),
+              ),
+              NavigationDrawerDestination(
+                icon: Icon(Icons.emoji_events_outlined),
+                label: Text("My Win History"),
               ),
               NavigationDrawerDestination(
                 icon: Icon(Icons.bar_chart),

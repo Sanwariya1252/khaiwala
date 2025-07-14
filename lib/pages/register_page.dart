@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khaiwala/pages/login_page.dart';
-import 'package:khaiwala/pages/verify_phone.dart';
 import 'package:khaiwala/styles/app_colors.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -236,7 +235,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const VerifyPhone(),
+                            builder: (_) => LoginPage(
+                              fullName: _fullNameController.text.trim(),
+                              mobileNumber: _mobileController.text.trim(),
+                            ),
                           ),
                         );
                       }

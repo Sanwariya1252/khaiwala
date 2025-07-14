@@ -7,7 +7,9 @@ import 'package:khaiwala/styles/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final String? fullName;
+  final String? mobileNumber;
+  const LoginPage({super.key, this.fullName, this.mobileNumber});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -167,7 +169,10 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (_) => HomePage(
+                                  fullName: widget.fullName,
+                                  mobileNumber: widget.mobileNumber,
+                                ),
                               ),
                             );
                           }
