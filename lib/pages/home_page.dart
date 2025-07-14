@@ -23,13 +23,14 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  final List<Widget> _pages = [
+  List<Widget> _pages() => [
     const ResultchartPage(),
     const SupportPage(),
-    const HomeContentPage(),
+    HomeContentPage(fullName: widget.fullName),
     const WinnerPage(),
     const MybidPage(),
   ];
+
   final List<Widget> _drawerPages = [
     DrawerPage(text: "home"),
     DrawerPage(text: "wallet"),
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             if (_selectedIndex != 2)
               _drawerPages[_currentIndex], // Drawer page background
-            _pages[_selectedIndex], // The main page
+            _pages()[_selectedIndex], // The main page
             if (_selectedIndex == 2)
               Positioned(
                 left: MediaQuery.of(context).size.width * 0.5 - 75,
@@ -364,7 +365,8 @@ class _BlinkingContainerState extends State<BlinkingContainer>
 }
 
 class HomeContentPage extends StatelessWidget {
-  const HomeContentPage({super.key});
+  final String? fullName;
+  const HomeContentPage({super.key, this.fullName});
 
   @override
   Widget build(BuildContext context) {
@@ -404,9 +406,9 @@ class HomeContentPage extends StatelessWidget {
                     ),
 
                     const SizedBox(width: 10),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "Welcome Back,\n Sonu Sanwariya",
+                        "Welcome Back,\n${fullName ?? 'Guest'}",
                         style: TextStyle(
                           fontFamily: "Barabara",
                           fontSize: 12,
