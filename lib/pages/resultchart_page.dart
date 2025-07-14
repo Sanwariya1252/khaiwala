@@ -185,6 +185,7 @@ class _ResultchartPageState extends State<ResultchartPage> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: "Barabara",
+                          color: AppColors.logoFontColor,
                           fontSize: 12,
                         ),
                       ),
@@ -219,7 +220,7 @@ class _ResultchartPageState extends State<ResultchartPage> {
                           horizontal: 8,
                           vertical: 6,
                         ),
-                        color: const Color(0xFFE8F5E9),
+                        color: Colors.green.shade100,
                         child: Row(
                           children: [
                             Expanded(

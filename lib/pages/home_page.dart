@@ -1,10 +1,18 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
+import 'package:khaiwala/pages/bank_accounts.dart';
+import 'package:khaiwala/pages/contact_page.dart';
 import 'package:khaiwala/pages/game_page.dart';
+import 'package:khaiwala/pages/language_page.dart';
+import 'package:khaiwala/pages/login_page.dart';
 import 'package:khaiwala/pages/mybid_page.dart';
+import 'package:khaiwala/pages/passbook_page.dart';
+import 'package:khaiwala/pages/refer_app.dart';
 import 'package:khaiwala/pages/resultchart_page.dart';
+import 'package:khaiwala/pages/rules_rates.dart';
+import 'package:khaiwala/pages/share_point.dart';
 import 'package:khaiwala/pages/support_page.dart';
+import 'package:khaiwala/pages/update_pass.dart';
+import 'package:khaiwala/pages/wallet_pages.dart';
 import 'package:khaiwala/pages/winner_page.dart';
 import 'package:khaiwala/styles/app_colors.dart';
 import 'dart:math' as math;
@@ -19,8 +27,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 2;
-  int _currentIndex = 0;
+  int _selectedIndex = 2; // Start on Home
+  final List<int> _navigationHistory = [2]; // Tracks visited tabs
+
+  final int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   List<Widget> _pages() => [
@@ -49,221 +59,404 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        body: Stack(
-          children: [
-            if (_selectedIndex != 2)
-              _drawerPages[_currentIndex], // Drawer page background
-            _pages()[_selectedIndex], // The main page
-            if (_selectedIndex == 2)
-              Positioned(
-                left: MediaQuery.of(context).size.width * 0.5 - 75,
-                bottom: 0,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => GamePage()),
-                    );
-                  },
-                  child: CustomPaint(
-                    painter: _TabPainter(),
-                    child: Container(
-                      width: 150,
-                      height: 42,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.sports_esports_rounded,
-                            color: AppColors.blackColor,
-                            size: 26,
-                          ),
-                          SizedBox(width: 6),
-                          Text(
-                            "Play Mode",
-                            style: TextStyle(
+    return WillPopScope(
+      onWillPop: () async {
+        // Show the same logout dialog
+        final shouldLogout = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.green.shade100,
+            title: const Text(
+              'Log Out',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            content: const Text(
+              'Are you sure you want to log out?',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // Stay
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // Confirm logout
+                child: const Text(
+                  'Log Out',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldLogout == true) {
+          // Navigate to LoginPage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginPage()),
+          );
+          return false; // We already handled navigation
+        } else {
+          return false; // Don't pop
+        }
+      },
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          body: Stack(
+            children: [
+              if (_selectedIndex != 2)
+                _drawerPages[_currentIndex], // Drawer page background
+              _pages()[_selectedIndex],
+              // The main page
+              if (_selectedIndex == 2)
+                Positioned(
+                  left: MediaQuery.of(context).size.width * 0.5 - 75,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => GamePage()),
+                      );
+                    },
+                    child: CustomPaint(
+                      painter: _TabPainter(),
+                      child: Container(
+                        width: 150,
+                        height: 42,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.sports_esports_rounded,
                               color: AppColors.blackColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                              size: 26,
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 6),
+                            Text(
+                              "Play Mode",
+                              style: TextStyle(
+                                color: AppColors.blackColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
-        ),
-        drawer: NavigationDrawerTheme(
-          data: NavigationDrawerThemeData(
-            tileHeight: 46,
-            iconTheme: WidgetStatePropertyAll(IconThemeData(size: 28)),
-            labelTextStyle: WidgetStatePropertyAll(
-              TextStyle(
-                fontFamily: "Akaya",
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            backgroundColor: AppColors.primaryColor,
-            indicatorColor: AppColors.logoFontColor,
-            indicatorShape: BeveledRectangleBorder(
-              borderRadius: BorderRadiusGeometry.circular(10),
-              side: BorderSide(color: AppColors.blackColor),
-            ),
+            ],
           ),
-          child: NavigationDrawer(
-            onDestinationSelected: (value) {
-              setState(() {
-                _currentIndex = value;
-              });
-              _scaffoldKey.currentState?.closeDrawer();
-            },
-            selectedIndex: _currentIndex,
-            children: [
-              DrawerHeader(
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage(
-                          "assets/images/khaiwala.png",
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        widget.fullName ?? "Guest",
-                        style: TextStyle(
-                          color: Colors.green[50],
-                          fontWeight: FontWeight.w900,
-                          fontSize: 22,
-                        ),
-                      ),
-
-                      Text(
-                        widget.mobileNumber ?? "",
-                        style: TextStyle(
-                          color: Colors.green[50],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+          drawer: NavigationDrawerTheme(
+            data: NavigationDrawerThemeData(
+              tileHeight: 46,
+              iconTheme: WidgetStatePropertyAll(IconThemeData(size: 28)),
+              labelTextStyle: WidgetStatePropertyAll(
+                TextStyle(
+                  fontFamily: "Akaya",
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.home),
-                label: Text("Home"),
+              backgroundColor: AppColors.primaryColor,
+              indicatorColor: AppColors.logoFontColor,
+              indicatorShape: BeveledRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(10),
+                side: BorderSide(color: AppColors.blackColor),
               ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.monetization_on),
-                label: Text("Wallet"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.receipt_long),
-                label: Text("Passbook"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.account_balance),
-                label: Text("Bank Accounts"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.rule),
-                label: Text("Rules & Rates"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.history),
-                label: Text("My Bid History"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.emoji_events_outlined),
-                label: Text("My Win History"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.bar_chart),
-                label: Text("Result Charts"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.share),
-                label: Text("Refer App"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.swap_horiz),
-                label: Text("Share Points"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.lock_reset),
-                label: Text("Update Password"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.translate),
-                label: Text("Language Change"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.support_agent),
-                label: Text("Contact Us"),
-              ),
-              NavigationDrawerDestination(
-                icon: Icon(Icons.exit_to_app),
-                label: Text("Log Out"),
-              ),
-            ],
+            ),
+            child: NavigationDrawer(
+              onDestinationSelected: (value) {
+                _scaffoldKey.currentState?.closeDrawer();
+
+                switch (value) {
+                  case 0: // Home
+                    setState(() {
+                      _selectedIndex = 2; // Home tab
+                    });
+                    break;
+                  case 1: // Wallet
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WalletPage()),
+                    );
+                    break;
+                  case 2: // Passbook
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PassbookPage()),
+                    );
+                    break;
+                  case 3: // Bank Accounts
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const BankAccounts()),
+                    );
+                    break;
+                  case 4: // Rules & Rates
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RulesRates()),
+                    );
+                    break;
+                  case 5: // My Bid History
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MybidPage()),
+                    );
+                    break;
+                  case 6: // My Win History
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WinnerPage()),
+                    );
+                    break;
+                  case 7: // Result Charts
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ResultchartPage(),
+                      ),
+                    );
+                    break;
+                  case 8: // Refer App
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ReferApp()),
+                    );
+                    break;
+                  case 9: // Share Points
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SharePoint()),
+                    );
+                    break;
+                  case 10: // Update Password
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const UpdatePass()),
+                    );
+                    break;
+                  case 11: // Language Change
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LanguagePage()),
+                    );
+                    break;
+                  case 12: // Contact Us
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ContactPage()),
+                    );
+                    break;
+                  case 13: // Log Out
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: Colors.green.shade100,
+                        title: const Text(
+                          'Log Out',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: const Text(
+                          'Are you sure you want to log out?',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close dialog
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Log Out',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                    break;
+                }
+              },
+
+              selectedIndex: _currentIndex,
+              children: [
+                DrawerHeader(
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: AssetImage(
+                            "assets/images/khaiwala.png",
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.center,
+                            child: Text(
+                              widget.fullName ?? "Guest",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.green[50],
+                                fontWeight: FontWeight.w900,
+                                fontSize:
+                                    MediaQuery.of(context).size.width *
+                                    0.055, // ~5.5% of width
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Text(
+                          widget.mobileNumber ?? "",
+                          style: TextStyle(
+                            color: Colors.green[50],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.home),
+                  label: Text("Home"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.monetization_on),
+                  label: Text("Wallet"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.receipt_long),
+                  label: Text("Passbook"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.account_balance),
+                  label: Text("Bank Accounts"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.rule),
+                  label: Text("Rules & Rates"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.history),
+                  label: Text("My Bid History"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.emoji_events_outlined),
+                  label: Text("My Win History"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.bar_chart),
+                  label: Text("Result Charts"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.share),
+                  label: Text("Refer App"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.swap_horiz),
+                  label: Text("Share Points"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.lock_reset),
+                  label: Text("Update Password"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.translate),
+                  label: Text("Language Change"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.support_agent),
+                  label: Text("Contact Us"),
+                ),
+                NavigationDrawerDestination(
+                  icon: Icon(Icons.exit_to_app),
+                  label: Text("Log Out"),
+                ),
+              ],
+            ),
           ),
-        ),
-        bottomNavigationBar: NavigationBarTheme(
-          data: const NavigationBarThemeData(
-            height: 60,
-            backgroundColor: Color(0xFFE8F5E9),
-            elevation: 0,
-            iconTheme: WidgetStatePropertyAll(
-              IconThemeData(color: AppColors.blackColor, size: 28),
-            ),
-            labelTextStyle: WidgetStatePropertyAll(
-              TextStyle(
-                color: AppColors.primaryColor,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+          bottomNavigationBar: NavigationBarTheme(
+            data: const NavigationBarThemeData(
+              height: 60,
+              backgroundColor: Color(0xFFE8F5E9),
+              elevation: 0,
+              iconTheme: WidgetStatePropertyAll(
+                IconThemeData(color: AppColors.blackColor, size: 28),
+              ),
+              labelTextStyle: WidgetStatePropertyAll(
+                TextStyle(
+                  color: AppColors.primaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              indicatorShape: CircleBorder(
+                side: BorderSide(color: AppColors.primaryColor, width: 35),
               ),
             ),
-            indicatorShape: CircleBorder(
-              side: BorderSide(color: AppColors.primaryColor, width: 35),
+            child: NavigationBar(
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  if (_selectedIndex != index) {
+                    _navigationHistory.add(index);
+                  }
+                  _selectedIndex = index;
+                });
+              },
+
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.insert_chart_rounded),
+                  label: 'Result Chart',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.support_agent_rounded),
+                  label: 'Support',
+                ),
+                NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                NavigationDestination(
+                  icon: Icon(Icons.emoji_events_outlined),
+                  label: 'Winners',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.gavel_rounded),
+                  label: 'My Bids',
+                ),
+              ],
             ),
-          ),
-          child: NavigationBar(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.insert_chart_rounded),
-                label: 'Result Chart',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.support_agent_rounded),
-                label: 'Support',
-              ),
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-              NavigationDestination(
-                icon: Icon(Icons.emoji_events_outlined),
-                label: 'Winners',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.gavel_rounded),
-                label: 'My Bids',
-              ),
-            ],
           ),
         ),
       ),
@@ -408,7 +601,7 @@ class HomeContentPage extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        "Welcome Back,\n${fullName ?? 'Guest'}",
+                        "${getGreeting()},\n${fullName ?? 'Guest'}",
                         style: TextStyle(
                           fontFamily: "Barabara",
                           fontSize: 12,
@@ -697,5 +890,16 @@ class HomeContentPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+String getGreeting() {
+  final hour = DateTime.now().hour;
+  if (hour < 12) {
+    return "Good Morning";
+  } else if (hour < 17) {
+    return "Good Afternoon";
+  } else {
+    return "Good Evening";
   }
 }
