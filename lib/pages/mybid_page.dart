@@ -360,7 +360,7 @@ class _MybidPageState extends State<MybidPage> {
         centerTitle: true,
         backgroundColor: AppColors.primaryColor,
         title: const Text(
-          "My Bids",
+          "My Bid Details",
           style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Barabara"),
         ),
         leading: IconButton(

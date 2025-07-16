@@ -68,7 +68,7 @@ class _ResultchartPageState extends State<ResultchartPage> {
         centerTitle: true,
         backgroundColor: AppColors.primaryColor,
         title: const Text(
-          "Monthly Chart",
+          "Monthly Result Charts",
           style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Barabara"),
         ),
         leading: IconButton(

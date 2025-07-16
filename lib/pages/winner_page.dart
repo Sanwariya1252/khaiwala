@@ -11,7 +11,7 @@ class WinnerPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColors.primaryColor,
         title: const Text(
-          "Monthly Chart",
+          "Win & Loss Details",
           style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Barabara"),
         ),
         leading: IconButton(

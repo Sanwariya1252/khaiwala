@@ -91,8 +91,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.length != 10) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Enter your registered number';
+                        } else if (value.length != 10) {
+                          return 'Enter valid 10-digits number';
                         }
                         return null;
                       },
