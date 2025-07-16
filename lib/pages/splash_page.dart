@@ -19,7 +19,6 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
 
-    // Set status and navigation bar color
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xff009f75),
@@ -27,12 +26,11 @@ class _SplashPageState extends State<SplashPage> {
       ),
     );
 
-    // Navigate to LoginPage after delay
-    Timer(splashDuration, () {
+    Future.delayed(splashDuration, () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (_) => const LoginPage()),
         );
       }
     });
@@ -49,12 +47,11 @@ class _SplashPageState extends State<SplashPage> {
               final screenWidth = constraints.maxWidth;
               final screenHeight = constraints.maxHeight;
 
-              // Responsive sizes
-              final double imageSize = screenWidth * 0.5; // 50% width
-              final double spacing = screenHeight * 0.03;
-              final double titleFontSize = screenWidth * 0.05;
-              final double subtitleFontSize = screenWidth * 0.065;
-              final double horizontalPadding = screenWidth * 0.08;
+              final imageSize = screenWidth * 0.5;
+              final spacing = screenHeight * 0.03;
+              final titleFontSize = screenWidth * 0.05;
+              final subtitleFontSize = screenWidth * 0.065;
+              final horizontalPadding = screenWidth * 0.08;
 
               return Stack(
                 children: [
@@ -63,8 +60,6 @@ class _SplashPageState extends State<SplashPage> {
                     height: double.infinity,
                     color: AppColors.primaryColor,
                   ),
-
-                  // Background animation
                   Positioned.fill(
                     child: IgnorePointer(
                       child: Lottie.asset(
@@ -72,14 +67,18 @@ class _SplashPageState extends State<SplashPage> {
                         repeat: true,
                         animate: true,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(color: AppColors.primaryColor);
+                        },
                       ),
                     ),
                   ),
-
-                  // Foreground content with scroll protection
                   Center(
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: spacing),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                        vertical: spacing,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -90,7 +89,6 @@ class _SplashPageState extends State<SplashPage> {
                               width: imageSize,
                               height: imageSize,
                               fit: BoxFit.cover,
-                              semanticLabel: "Khaiwala Logo",
                             ),
                           ),
                           SizedBox(height: spacing),
@@ -128,3 +126,4 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 }
+  

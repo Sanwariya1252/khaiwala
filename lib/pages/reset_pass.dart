@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:khaiwala/styles/app_colors.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -12,31 +14,88 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _otpController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  Timer? _resendTimer;
+  int _secondsRemaining = 60;
+  bool _canResend = false;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _startResendTimer();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xff009f75),
         systemNavigationBarColor: Color(0xff009f75),
       ),
     );
+  }
 
+  void _startResendTimer() {
+    setState(() {
+      _canResend = false;
+      _secondsRemaining = 60;
+    });
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsRemaining == 0) {
+        timer.cancel();
+        setState(() {
+          _canResend = true;
+        });
+      } else {
+        setState(() {
+          _secondsRemaining--;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _resendTimer?.cancel();
+    _otpController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              child: SingleChildScrollView(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final screenHeight = constraints.maxHeight;
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.08,
+                vertical: screenHeight * 0.04,
+              ),
+              child: Form(
+                key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(200),
+                        child: Image.asset(
+                          "assets/images/khaiwala.png",
+                          height: screenWidth * 0.3,
+                          width: screenWidth * 0.3,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
                     const Text(
                       "Reset Password",
                       style: TextStyle(
@@ -47,22 +106,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 14),
                     const Text(
-                      "Enter the OTP and set your new password",
+                      "Enter the OTP and choose your new password",
                       style: TextStyle(
                         color: Color(0xff7a65ae),
-                        fontSize: 18,
+                        fontSize: 14,
                         fontFamily: "Akaya",
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: screenHeight * 0.02),
                     TextFormField(
                       controller: _otpController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: 'OTP',
+                        labelText: 'Enter OTP',
                         labelStyle: const TextStyle(
                           color: Color(0xff009f75),
                           fontFamily: "Barabara",
@@ -73,15 +132,55 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ),
                         filled: true,
                         fillColor: Colors.grey[100],
+                        suffixIcon: const Icon(
+                          Icons.sms,
+                          color: Color(0xff009f75),
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Enter OTP';
+                          return 'Enter OTP Sent to your number';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: _canResend
+                              ? () {
+                                  _startResendTimer();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: AppColors.headingColor,
+                                      content: Center(
+                                        child: Text(
+                                          "Sending OTP...",
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                      duration: Duration(seconds: 6),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          child: Text(
+                            _canResend
+                                ? "Resend OTP"
+                                : "Resend in $_secondsRemaining s",
+                            style: TextStyle(
+                              color: _canResend
+                                  ? const Color(0xff009f75)
+                                  : Colors.grey,
+                              fontFamily: "Akaya",
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -99,7 +198,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         fillColor: Colors.grey[100],
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                             color: Color(0xff009f75),
                           ),
                           onPressed: () {
@@ -110,13 +211,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.length < 6) {
-                          return 'Enter at least 6 characters';
+                        if (value == null || value.trim().isEmpty) {
+                          return "Enter your new password";
+                        } else if (value.length < 6) {
+                          return "Password must be at least 6 characters";
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: screenHeight * 0.03),
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscureConfirmPassword,
@@ -134,35 +237,51 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         fillColor: Colors.grey[100],
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                            _obscureConfirmPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                             color: Color(0xff009f75),
                           ),
                           onPressed: () {
                             setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
                             });
                           },
                         ),
                       ),
                       validator: (value) {
-                        if (value != _passwordController.text) {
-                          return 'Passwords do not match';
+                        if (value == null || value.trim().isEmpty) {
+                          return "Re-Enter your new password";
+                        } else if (value != _passwordController.text) {
+                          return "Passwords do not match";
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: screenHeight * 0.03),
                     SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // You can handle reset logic here
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Password reset successfully")),
+                              const SnackBar(
+                                backgroundColor: AppColors.headingColor,
+                                content: Center(
+                                  child: Text(
+                                    "Password change successfully",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                                duration: Duration(seconds: 6),
+                              ),
                             );
-                            Navigator.popUntil(context, (route) => route.isFirst);
+                            Navigator.popUntil(
+                              context,
+                              (route) => route.isFirst,
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -178,7 +297,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         child: const Text("Reset Password"),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: screenHeight * 0.02),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -188,7 +307,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         style: TextStyle(
                           color: Color(0xff009f75),
                           fontFamily: "Akaya",
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -196,8 +315,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   ],
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
