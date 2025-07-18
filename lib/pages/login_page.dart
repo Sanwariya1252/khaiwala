@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khaiwala/pages/forgot_pass.dart';
-import 'package:khaiwala/pages/home_page.dart';
 import 'package:khaiwala/pages/register_page.dart';
+import 'package:khaiwala/pages/verify_phone.dart'; // Import the VerifyPhone widget
 import 'package:khaiwala/styles/app_colors.dart';
+import 'package:khaiwala/utils/session_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -167,12 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
+                            SessionManager.setBool('isLoggedIn', true);
+                            SessionManager.setBool('isOtpVerified', false);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => HomePage(
-                                  fullName: widget.fullName,
-                                  mobileNumber: widget.mobileNumber,
+                                builder: (_) => VerifyPhonePage(
+                                  fullName: widget.fullName ?? '',
+                                  phoneNumber: _phoneController.text,
                                 ),
                               ),
                             );

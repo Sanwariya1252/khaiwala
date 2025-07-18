@@ -17,6 +17,8 @@ import 'package:khaiwala/pages/winner_page.dart';
 import 'package:khaiwala/styles/app_colors.dart';
 import 'dart:math' as math;
 
+import 'package:khaiwala/utils/session_manager.dart';
+
 class HomePage extends StatefulWidget {
   final String? fullName;
   final String? mobileNumber;
@@ -282,11 +284,13 @@ class _HomePageState extends State<HomePage> {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context); // Close dialog
-                              Navigator.pushReplacement(
+                              SessionManager.clearSession();
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => const LoginPage(),
                                 ),
+                                (route) => false,
                               );
                             },
                             child: const Text(

@@ -7,4 +7,6 @@ class AppColors {
   static const backGroundColor = Color(0xFFE8F5E9);
   static const logoColor = Color(0xFF00ffe0);
   static const logoFontColor = Color(0xFFff0004);
+
+  static get primary => null;
 }
